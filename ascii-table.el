@@ -4,7 +4,7 @@
 ;; Author: Lassi Kortela <lassi@lassi.io>
 ;; URL: https://github.com/lassik/emacs-ascii-table
 ;; Package-Requires: ((emacs "24.3"))
-;; Version: 0.1.0
+;; Version: 0.2.0
 ;; Keywords: help tools
 
 ;; This file is not part of GNU Emacs.
@@ -21,6 +21,41 @@
 ;;; Code:
 
 (require 'cl-lib)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                       User customizable variables
+
+(defgroup ascii-table nil "Major mode that shows an interactive ASCII table."
+	:group 'convenience
+	:package-version '(ascii-table . "0.2.0")
+	:prefix "ascii-table-")
+	
+(defface ascii-table-control '((t (:inherit font-lock-keyword-face)))
+	"face used for control characters."
+	:group 'ascii-table)
+
+(defface ascii-table-punctuation '((t (:inherit font-lock-preprocessor-face)))
+	"face used for punctuation characters."
+	:group 'ascii-table)
+
+(defface ascii-table-space '((t (:inherit font-lock-string-face)))
+	"face used for space characters."
+	:group 'ascii-table)
+
+(defface ascii-table-digit '((t (:inherit font-lock-function-name-face)))
+	"face used for digit characters."
+	:group 'ascii-table)
+
+(defface ascii-table-uppercase '((t (:inherit font-lock-variable-name)))
+	"face used for uppercase letter characters."
+	:group 'ascii-table)
+
+(defface ascii-table-lowercase '((t (:inherit font-lock-variable-name)))
+	"face used for lowercase letter characters."
+	:group 'ascii-table)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                       Internal Code
 
 (defvar ascii-table-base 16
   "Number base used for character codes in the ASCII table.
@@ -51,12 +86,12 @@ Otherwise their names NUL .. DEL are shown.")
 (defun ascii-table--class-face (class)
   "Internal helper to get face for character CLASS."
   (cl-case class
-    (control font-lock-keyword-face)
-    (punct font-lock-preprocessor-face)
-    (space font-lock-string-face)
-    (digit font-lock-function-name-face)
-    (upper font-lock-variable-name-face)
-    (lower font-lock-variable-name-face)
+    (control 'ascii-table-control)
+    (punct 'ascii-table-punctuation)
+    (space 'ascii-table-space)
+    (digit 'ascii-table-digit)
+    (upper 'ascii-table-uppercase)
+    (lower 'ascii-table-lowercase)
     (t nil)))
 
 (defun ascii-table--character-class (codepoint)

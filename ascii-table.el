@@ -23,7 +23,7 @@
 (require 'cl-lib)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;                       User customizable variables
+;;                       User Customizable Faces
 
 (defgroup ascii-table nil "Major mode that shows an interactive ASCII table."
 	:group 'convenience
@@ -55,21 +55,53 @@
 	:group 'ascii-table)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                       User Customizable Variables
+
+(defcustom ascii-table-initial-base 16
+	"Initial number base used for character codes in the ASCII table.
+
+Valid values are 2 (Binary), 8 (Octal), 10 (Decimal), and
+16 (Hexadecimal)."
+	:group 'ascii-table
+	:type '(choice (const :tag "Hexadecimal" 16)
+								 (const :tag "Octal" 8)
+								 (const :tag "Binary" 2)
+								 (const :tag "Decimal" 10)))
+
+(defcustom ascii-table-initial-control nil
+  "Initial format used for control characters in the ASCII table.
+
+If non-nil, control characters initially use caret notation (^A .. ^?).
+Otherwise, their names NUL .. DEL are shown."
+	:group 'ascii-table
+	:type '(choice (const :tag "Name" nil)
+								 (other :tag "Caret" t)))
+
+(defcustom ascii-table-initial-escape nil
+  "Initial format used for control characters that have a backslash alternative in the ASCII table.
+
+if non-nil, control characters initially use backslash notation (\\a .. \\e).
+Otherwise, it defaults to 'ascii-table-initial-control'."
+	:group 'ascii-table
+	:type '(choice (const :tag "Default" nil)
+								 (other :tag "Escape" t)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                       Internal Code
 
-(defvar ascii-table-base 16
+(defvar ascii-table-base ascii-table-initial-base
   "Number base used for character codes in the ASCII table.
 
-Valid values are 2 (binary), 8 (octal), 10 (decimal), and
-16 (hex).  Another word for 'base' is 'radix'.")
+Valid values are 2 (Binary), 8 (Octal), 10 (Decimal), and
+16 (Hexadecimal).  Another word for 'base' is 'radix'.")
 
-(defvar ascii-table-control nil
+(defvar ascii-table-control ascii-table-initial-control
   "Use ^A notation for control characters in the ASCII table?
 
 If non-nil, control characters use caret notation (^A .. ^?).
 Otherwise their names NUL .. DEL are shown.")
 
-(defvar ascii-table-escape nil
+(defvar ascii-table-escape ascii-table-initial-escape
   "Use backslash notation for control characters in the ASCII table?")
 
 (defun ascii-table--binary (codepoint)
@@ -210,10 +242,10 @@ Assume the table is formatted using COLS columns."
     (insert "ASCII Table"
             " ("
             (cl-ecase ascii-table-base
-              (2 "binary")
-              (8 "octal")
-              (10 "decimal")
-              (16 "hex"))
+              (2 "Binary")
+              (8 "Octal")
+              (10 "Decimal")
+              (16 "Hex"))
             ")\n\n")
     (cl-dolist (codepoints/row '(8 7 6 5 4 3 2 1))
       (let* ((table (ascii-table--table codepoints/row))
